@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 enum StoryColor {
 
-  yellowAccent("yellowAccent", Color(0xFFE8F9FF)),;
+  yellowAccent("yellowAccent", Color(0xFF00FFF0));
+
+
 
   const StoryColor(this.name, this.color);
 
