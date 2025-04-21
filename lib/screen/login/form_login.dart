@@ -5,53 +5,74 @@ class FormLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Column(
           children: [
-            TextField(
-              decoration: InputDecoration(
-                labelText: "Email",
-                prefixIcon: Icon(Icons.email_outlined),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide.none,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "E-Mail",
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 15),
-                fillColor: Theme.of(context).colorScheme.surface,
-                filled: true,
-              ),
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
+                const SizedBox(height: 5),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: "Enter your email",
+                    prefixIcon: Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(vertical: 15),
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    filled: true,
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                ),
+              ],
             ),
             const SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                labelText: "Password",
-                prefixIcon: Icon(Icons.lock_outline),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide.none,
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Password",
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 15),
-                fillColor: Theme.of(context).colorScheme.surface,
-                filled: true,
-              ),
-              obscureText: true,
+                const SizedBox(height: 5),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: "Enter your password",
+                    prefixIcon: Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(vertical: 15),
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    filled: true,
+                  ),
+                  obscureText: true,
+                  textInputAction: TextInputAction.done,
+                ),
+              ],
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 35),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50), // Full-width button
                 backgroundColor: Theme.of(context).colorScheme.primary, // Primary color
                 foregroundColor: Theme.of(context).colorScheme.onPrimary, // Text color on primary
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Rounded corners
+                  borderRadius: BorderRadius.circular(20), // Rounded corners
                 ),
               ),
               onPressed: () {},
@@ -60,14 +81,14 @@ class FormLogin extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onPrimary,
                   )),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50), // Full-width button
                 backgroundColor: Theme.of(context).colorScheme.surface, // Primary color
                 foregroundColor: Theme.of(context).colorScheme.onSurface, // Text color on primary
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Rounded corners
+                  borderRadius: BorderRadius.circular(20), // Rounded corners
                 ),
               ),
               onPressed: () {},
@@ -78,7 +99,6 @@ class FormLogin extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }

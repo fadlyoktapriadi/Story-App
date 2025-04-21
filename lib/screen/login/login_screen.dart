@@ -30,8 +30,7 @@ class LoginScreen extends StatelessWidget {
               Text("Welcome to Storyfy", style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 10),
               Text("Sign up or login bellow to share your story", style: Theme.of(context).textTheme.labelLarge),
-              const SizedBox(height: 20),
-        
+
               FormLogin()
               
             ],

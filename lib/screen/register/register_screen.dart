@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:story_app/screen/register/form_register.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -20,10 +21,14 @@ class RegisterScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                 )),
             const SizedBox(height: 20),
-            Text("Sign up your account in form below", style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 20),
+            Lottie.asset('assets/animation/animation_register.json', // Replace with your file path
+              width: 150, // Optional: Set width
+              height: 150, // Optional: Set height
+            ),
+            const SizedBox(height: 10),
+            Text("Create your account and share your story with Storyfy", style: Theme.of(context).textTheme.labelLarge),
 
-            RegisterLogin()
+            FormRegister()
 
           ],
         ),
