@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FormRegister extends StatelessWidget {
-  const FormRegister({super.key});
+  final Function() toLogin;
+  const FormRegister({super.key, required this.toLogin});
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +112,7 @@ class FormRegister extends StatelessWidget {
           const SizedBox(height: 15),
           TextButton(
             onPressed: () {
-              // Navigate to login screen
+                toLogin();
             },
             child: Text(
               "Already have an account? Login",
@@ -120,7 +121,6 @@ class FormRegister extends StatelessWidget {
               ),
             ),
           ),
-
         ],
       ),
     );

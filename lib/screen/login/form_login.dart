@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class FormLogin extends StatelessWidget {
-  const FormLogin({super.key});
+  final Function() toRegister;
+
+  const FormLogin({super.key, required this.toRegister});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,9 @@ class FormLogin extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20), // Rounded corners
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                toRegister();
+              },
               child: Text("Sign Up",
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,

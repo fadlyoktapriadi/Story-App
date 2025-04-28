@@ -3,7 +3,8 @@ import 'package:lottie/lottie.dart';
 import 'package:story_app/screen/register/form_register.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  final Function() toLogin;
+  const RegisterScreen({super.key, required this.toLogin});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,9 @@ class RegisterScreen extends StatelessWidget {
             const SizedBox(height: 10),
             Text("Create your account and share your story with Storyfy", style: Theme.of(context).textTheme.labelLarge),
 
-            FormRegister()
+            FormRegister(
+              toLogin: toLogin,
+            )
 
           ],
         ),
