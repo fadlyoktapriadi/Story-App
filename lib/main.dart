@@ -12,7 +12,9 @@ void main() {
       ChangeNotifierProvider(
           create: (context) => MyRouterDelegate()
       ),
-      ChangeNotifierProvider(create: (context) => RegisterProvider(StoryRepository(ApiService()))
+      ChangeNotifierProvider(
+          create: (context) => RegisterProvider(StoryRepository(ApiService())
+          )
       )
 
     ],

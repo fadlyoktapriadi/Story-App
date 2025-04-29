@@ -5,6 +5,7 @@ import 'package:story_app/result/story_register_result_state.dart';
 
 class FormRegister extends StatefulWidget {
   final Function() toLogin;
+
   const FormRegister({super.key, required this.toLogin});
 
   @override
@@ -27,7 +28,6 @@ class _FormRegisterState extends State<FormRegister> {
 
   @override
   Widget build(BuildContext context) {
-
     final provider = Provider.of<RegisterProvider>(context, listen: false);
 
     return Padding(
@@ -39,10 +39,7 @@ class _FormRegisterState extends State<FormRegister> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Name",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text("Name", style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _nameController,
@@ -67,10 +64,7 @@ class _FormRegisterState extends State<FormRegister> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "E-Mail",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text("E-Mail", style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _emailController,
@@ -93,14 +87,11 @@ class _FormRegisterState extends State<FormRegister> {
               ],
             ),
             const SizedBox(height: 20),
-        
+
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Password",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text("Password", style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _passwordController,
@@ -126,8 +117,12 @@ class _FormRegisterState extends State<FormRegister> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50), // Full-width button
-                backgroundColor: Theme.of(context).colorScheme.primary, // Primary color
-                foregroundColor: Theme.of(context).colorScheme.onPrimary, // Text color on primary
+                backgroundColor:
+                    Theme.of(context).colorScheme.primary, // Primary color
+                foregroundColor:
+                    Theme.of(
+                      context,
+                    ).colorScheme.onPrimary, // Text color on primary
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20), // Rounded corners
                 ),
@@ -140,31 +135,67 @@ class _FormRegisterState extends State<FormRegister> {
                       _emailController.text,
                       _passwordController.text,
                     );
-                    if(provider.state is StoryRegisterSuccessState) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Registration successful!')),
-                      );
-                    }else if(provider.state is StoryRegisterErrorState) {
+                    if (provider.state is StoryRegisterSuccessState) {
+                      final state =
+                          (provider.state as StoryRegisterSuccessState)
+                              .registerResponse;
+
+                      if (state.error) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(state.message)));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Register Success: ${state.message}"),
+                          ),
+                        );
+                        _nameController.clear();
+                        _emailController.clear();
+                        _passwordController.clear();
+                        await Future.delayed(const Duration(seconds: 1));
+                        widget.toLogin();
+                      }
+                    } else if (provider.state is StoryRegisterErrorState) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Registration failed!')),
                       );
                     }
-                  } catch(e){
+                  } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Failed to register: $e')),
                     );
                   }
                 }
               },
-              child: Text("Sign Up",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  )),
+              child: Consumer<RegisterProvider>(
+                builder: (context, value, child) {
+                  return switch (value.state) {
+                    StoryRegisterLoadingState() => Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    StoryRegisterSuccessState() => Text(
+                      "Sign Up",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    _ => Text(
+                      "Sign Up",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  };
+                },
+              ),
             ),
             const SizedBox(height: 15),
             TextButton(
               onPressed: () {
-                  // toLogin();
+                // toLogin();
               },
               child: Text(
                 "Already have an account? Login",
@@ -173,7 +204,6 @@ class _FormRegisterState extends State<FormRegister> {
                 ),
               ),
             ),
-        
           ],
         ),
       ),

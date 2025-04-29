@@ -19,10 +19,11 @@ class RegisterProvider with ChangeNotifier {
     try {
       final registerResponse = await storyRepository.register(name, email, password);
       _state = StoryRegisterSuccessState(registerResponse);
+      debugPrint('Berhasil xx: ${registerResponse.message}');
     } catch (e) {
+      debugPrint('Error: ${e.toString()}');
       _state = StoryRegisterErrorState(e.toString());
     }
-
     notifyListeners();
   }
 

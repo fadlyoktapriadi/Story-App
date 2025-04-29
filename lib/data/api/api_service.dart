@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:story_app/data/api/response/register_response.dart';
 
@@ -23,11 +24,18 @@ class ApiService{
 
       if (response.statusCode == 201) {
         return RegisterResponse.fromJson(jsonDecode(response.body));
-      } else {
+      }
+      else if(response.statusCode == 400) {
+        return RegisterResponse.fromJson(jsonDecode(response.body));
+      }
+      else {
+        debugPrint('Error: ${response.statusCode}');
         throw Exception('Failed to register');
       }
     } catch (e) {
+      debugPrint('Error: ${e.toString()}');
       throw Exception('Failed to register: $e');
+
     }
   }
 }
