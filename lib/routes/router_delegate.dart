@@ -29,13 +29,13 @@ class MyRouterDelegate extends RouterDelegate
         ),
         if (registerSelected)
           MaterialPage(
-            key: ValueKey("RegisterPage"),
-            child: RegisterScreen(
-              toLogin: () {
-                registerSelected = false;
-                notifyListeners();
-              },
-            )
+              key: ValueKey("RegisterPage"),
+              child: RegisterScreen(
+                toLogin: () {
+                  registerSelected = false;
+                  notifyListeners();
+                },
+              )
           ),
       ],
       onDidRemovePage: (page) {

@@ -9,7 +9,7 @@ class LoginScreen extends StatelessWidget {
   final Function() toRegister;
 
   const LoginScreen(
-    {super.key, required this.toRegister});
+      {super.key, required this.toRegister});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +21,11 @@ class LoginScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 30),
               Text("Storyfy",
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              )),
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  )),
               const SizedBox(height: 20),
               Lottie.asset('assets/animation/animation_login.json', // Replace with your file path
                 width: 150, // Optional: Set width
@@ -39,7 +39,7 @@ class LoginScreen extends StatelessWidget {
               FormLogin(
                 toRegister: toRegister,
               )
-              
+
             ],
           ),
         ),
