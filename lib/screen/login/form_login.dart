@@ -1,107 +1,168 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:story_app/provider/login/login_provider.dart';
+import 'package:story_app/result/story_login_result_state.dart';
 
-class FormLogin extends StatelessWidget {
+class FormLogin extends StatefulWidget {
   final Function() toRegister;
 
   const FormLogin({super.key, required this.toRegister});
 
+
+
+  @override
+  State<FormLogin> createState() => _FormLoginState();
+}
+
+class _FormLoginState extends State<FormLogin> {
+
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final provider = Provider.of<LoginProvider>(context, listen: false);
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: Column(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "E-Mail",
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: 5),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Enter your email",
-                  prefixIcon: Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 15),
-                  fillColor: Theme.of(context).colorScheme.surface,
-                  filled: true,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "E-Mail",
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
+                const SizedBox(height: 5),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    hintText: "Enter your email",
+                    prefixIcon: Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(vertical: 15),
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    filled: true,
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
 
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Password",
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: 5),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Enter your password",
-                  prefixIcon: Icon(Icons.lock_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 15),
-                  fillColor: Theme.of(context).colorScheme.surface,
-                  filled: true,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Password",
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
-                obscureText: true,
-                textInputAction: TextInputAction.done,
-              ),
-            ],
-          ),
-          const SizedBox(height: 35),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(50), // Full-width button
-              backgroundColor: Theme.of(context).colorScheme.primary, // Primary color
-              foregroundColor: Theme.of(context).colorScheme.onPrimary, // Text color on primary
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20), // Rounded corners
-              ),
+                const SizedBox(height: 5),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    hintText: "Enter your password",
+                    prefixIcon: Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(vertical: 15),
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    filled: true,
+                  ),
+                  obscureText: true,
+                  textInputAction: TextInputAction.done,
+                ),
+              ],
             ),
-            onPressed: () {},
-            child: Text("Login",
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                )),
-          ),
-          const SizedBox(height: 15),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(50), // Full-width button
-              backgroundColor: Theme.of(context).colorScheme.surface, // Primary color
-              foregroundColor: Theme.of(context).colorScheme.onSurface, // Text color on primary
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20), // Rounded corners
+            const SizedBox(height: 35),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(50), // Full-width button
+                backgroundColor: Theme.of(context).colorScheme.primary, // Primary color
+                foregroundColor: Theme.of(context).colorScheme.onPrimary, // Text color on primary
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20), // Rounded corners
+                ),
               ),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  await provider.login(_emailController.text, _passwordController.text);
+                  if (provider.state is StoryLoginSuccessState) {
+                    final state = (provider.state as StoryLoginSuccessState).loginResponse;
+                    if (state.error) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(state.message)));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Login Success: ${state.message}"),
+                        ),
+                      );
+                      _emailController.clear();
+                      _passwordController.clear();
+                      // await Future.delayed(const Duration(seconds: 1));
+                      // widget.toLogin();
+                    }
+                    // Handle successful login
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Login Successful")),
+                    );
+                  } else if (provider.state is StoryLoginErrorState) {
+                    // Handle login error
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Login Failed")),
+                    );
+                  }
+                }
+              },
+              child: Text("Login",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  )),
             ),
-            onPressed: () {
-              toRegister();
-            },
-            child: Text("Sign Up",
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                )),
-          ),
-        ],
+            const SizedBox(height: 15),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(50), // Full-width button
+                backgroundColor: Theme.of(context).colorScheme.surface, // Primary color
+                foregroundColor: Theme.of(context).colorScheme.onSurface, // Text color on primary
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20), // Rounded corners
+                ),
+              ),
+              onPressed: () {
+                widget.toRegister();
+              },
+              child: Text("Sign Up",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  )),
+            ),
+          ],
+        ),
       ),
     );
   }

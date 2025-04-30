@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/data/StoryRepository.dart';
 import 'package:story_app/data/api/api_service.dart';
-import 'package:story_app/provider/login/register_provider.dart';
-import 'package:story_app/routes/router_delegate.dart';import 'package:flutter/services.dart';
+import 'package:story_app/provider/login/login_provider.dart';
+import 'package:story_app/provider/register/register_provider.dart';
+import 'package:story_app/routes/router_delegate.dart';
 import 'package:story_app/styles/theme/story_theme.dart';
 
 void main() {
@@ -15,8 +16,11 @@ void main() {
       ChangeNotifierProvider(
           create: (context) => RegisterProvider(StoryRepository(ApiService())
           )
+      ),
+      ChangeNotifierProvider(
+        create: (context) => LoginProvider(StoryRepository(ApiService())
+          )
       )
-
     ],
       child: const MainApp(),
     )

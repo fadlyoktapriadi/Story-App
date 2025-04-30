@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/provider/login/register_provider.dart';
+import 'package:story_app/provider/register/register_provider.dart';
 import 'package:story_app/result/story_register_result_state.dart';
 
 class FormRegister extends StatefulWidget {
@@ -41,7 +41,7 @@ class _FormRegisterState extends State<FormRegister> {
               children: [
                 Text("Name", style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 5),
-                TextFormField(
+                  TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     hintText: "Enter your Name",
