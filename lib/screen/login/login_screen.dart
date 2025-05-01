@@ -6,10 +6,11 @@ import 'package:lottie/lottie.dart';
 import 'package:story_app/screen/login/form_login.dart';
 
 class LoginScreen extends StatelessWidget {
+  final Function() toLogin;
   final Function() toRegister;
 
   const LoginScreen(
-      {super.key, required this.toRegister});
+      {super.key, required this.toLogin, required this.toRegister});
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,7 @@ class LoginScreen extends StatelessWidget {
               Text("Sign up or register bellow to share your story", style: Theme.of(context).textTheme.labelLarge),
 
               FormLogin(
+                toLogin: toLogin,
                 toRegister: toRegister,
               )
 

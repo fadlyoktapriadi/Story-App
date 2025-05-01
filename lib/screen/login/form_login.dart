@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/provider/login/login_provider.dart';
+import 'package:story_app/provider/login/auth_provider.dart';
 import 'package:story_app/result/story_login_result_state.dart';
 
 class FormLogin extends StatefulWidget {
+  final Function() toLogin;
   final Function() toRegister;
 
-  const FormLogin({super.key, required this.toRegister});
-
-
+  const FormLogin({super.key, required this.toLogin, required this.toRegister});
 
   @override
   State<FormLogin> createState() => _FormLoginState();
@@ -29,9 +28,6 @@ class _FormLoginState extends State<FormLogin> {
 
   @override
   Widget build(BuildContext context) {
-
-    final provider = Provider.of<LoginProvider>(context, listen: false);
-
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: Form(
@@ -108,40 +104,50 @@ class _FormLoginState extends State<FormLogin> {
               ),
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  await provider.login(_emailController.text, _passwordController.text);
-                  if (provider.state is StoryLoginSuccessState) {
-                    final state = (provider.state as StoryLoginSuccessState).loginResponse;
-                    if (state.error) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(state.message)));
-                    } else {
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  authProvider.login(_emailController.text, _passwordController.text);
+                  authProvider.addListener(() {
+                    if (authProvider.state is StoryLoginLoadingState) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Login Success: ${state.message}"),
-                        ),
+                        const SnackBar(content: Text("Loading...")),
                       );
-                      _emailController.clear();
-                      _passwordController.clear();
-                      // await Future.delayed(const Duration(seconds: 1));
-                      // widget.toLogin();
+                    } else if (authProvider.state is StoryLoginSuccessState) {
+                      widget.toLogin();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Login Success")),
+                      );
+                    } else if (authProvider.state is StoryLoginErrorState) {
+                      final errorMessage = (authProvider.state as StoryLoginErrorState).error;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(errorMessage)),
+                      );
                     }
-                    // Handle successful login
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Login Successful")),
-                    );
-                  } else if (provider.state is StoryLoginErrorState) {
-                    // Handle login error
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Login Failed")),
-                    );
-                  }
+                  });
                 }
               },
-              child: Text("Login",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  )),
+              child: Consumer<AuthProvider>(
+                builder: (context, value, child) {
+                  return switch (value.state) {
+                    StoryLoginLoadingState() => Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    StoryLoginSuccessState() => Text(
+                      "Sign In",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    _ => Text(
+                      "Sign In",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  };
+                },
+              ),
             ),
             const SizedBox(height: 15),
             ElevatedButton(

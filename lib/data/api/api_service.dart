@@ -41,7 +41,7 @@ class ApiService{
   Future<LoginResponse> login(String email, String password) async {
     try {
       final response = await http.post(
-        Uri.parse('$_baseUrl/login'),
+        Uri.parse('https://story-api.dicoding.dev/v1/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -54,14 +54,15 @@ class ApiService{
       if (response.statusCode == 200) {
         return LoginResponse.fromJson(jsonDecode(response.body));
       }
-      else if(response.statusCode == 400) {
+      else if(response.statusCode == 400 || response.statusCode == 401) {
         return LoginResponse.fromJson(jsonDecode(response.body));
+        // respon error dengan respon login error json
       }
       else {
-        throw Exception('Failed to register');
+        throw Exception('Failed to Login');
       }
     } catch (e) {
-      throw Exception('Failed to register: $e');
+      throw Exception('Failed to Login: ${e.toString()}');
 
     }
   }

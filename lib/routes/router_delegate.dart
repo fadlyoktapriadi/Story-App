@@ -1,59 +1,107 @@
 import 'package:flutter/material.dart';
+import 'package:story_app/data/AuthRepository.dart';
+import 'package:story_app/screen/home/home_screen.dart';
 import 'package:story_app/screen/login/login_screen.dart';
 import 'package:story_app/screen/register/register_screen.dart';
 
 class MyRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
 
-  bool registerSelected = false;
-
   final GlobalKey<NavigatorState> _navigatorKey;
-  MyRouterDelegate() : _navigatorKey = GlobalKey<NavigatorState>();
 
-  @override
-  GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
+  bool registerSelected = false;
+  final AuthRepository authRepository;
+  List<Page> pages = [];
+  bool? isLogin;
+  bool? isRegister = false;
+
+  MyRouterDelegate(this.authRepository) :
+        _navigatorKey = GlobalKey<NavigatorState>(){
+    _init();
+  }
+
+  _init() async {
+    isLogin = await authRepository.getLogin();
+    debugPrint("Login status: $isLogin");
+    debugPrint("Register status: $isRegister");
+    notifyListeners();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isLogin == null) {
+      pages = _loggedOutStack;
+    } else if (isLogin == true) {
+      pages = _loggedInStack;
+    } else {
+      pages = _loggedOutStack;
+    }
     return Navigator(
-      key: navigatorKey,
-      pages: [
-        MaterialPage(
-          key: const ValueKey("LoginPage"),
-          child: LoginScreen(
-            toRegister: () {
-              registerSelected = true;
-              notifyListeners();
-            },
-          ),
-        ),
-        if (registerSelected)
-          MaterialPage(
-              key: ValueKey("RegisterPage"),
-              child: RegisterScreen(
-                toLogin: () {
-                  registerSelected = false;
-                  notifyListeners();
-                },
-              )
-          ),
-      ],
+      key: _navigatorKey,
+      pages: pages,
       onDidRemovePage: (page) {
-        if (page.key == ValueKey("RegisterPage")) {
-          // Hapus fungsi setState dan ubah dengan method notifyListeners()
-          registerSelected = false;
+        if (page.key == const ValueKey("RegisterPage")) {
+          isRegister = false;
           notifyListeners();
         }
       },
     );
   }
 
+  List<Page> get _splashStack => const [
+    MaterialPage(
+      key: ValueKey("SplashPage"),
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    ),
+  ];
+
+  List<Page> get _loggedOutStack => [
+    MaterialPage(
+      key: const ValueKey("LoginPage"),
+      child: LoginScreen(
+        toLogin: () {
+          isLogin = true;
+          notifyListeners();
+        },
+        toRegister: () {
+          isRegister = true;
+          notifyListeners();
+        },
+      ),
+    ),
+    if (isRegister == true)
+      MaterialPage(
+        key: const ValueKey("RegisterPage"),
+        child: RegisterScreen(
+          // onRegister: () {
+          //   isRegister = false;
+          //   notifyListeners();
+          // },
+          toLogin: () {
+            isRegister = false;
+            notifyListeners();
+          },
+        ),
+      ),
+  ];
+
+  List<Page> get _loggedInStack => [
+    MaterialPage(
+      key: const ValueKey("HomePage"),
+      child: HomeScreen(),
+    ),
+  ];
+
+  @override
+  GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
 
 
   @override
   Future<void> setNewRoutePath(configuration) {
-    // TODO: implement setNewRoutePath
     throw UnimplementedError();
   }
+
 
 }

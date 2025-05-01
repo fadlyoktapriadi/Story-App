@@ -1,13 +1,14 @@
 
 import 'package:flutter/material.dart';
-import 'package:story_app/data/StoryRepository.dart';
+import 'package:story_app/data/AuthRepository.dart';
+import 'package:story_app/data/api/api_service.dart';
 import 'package:story_app/result/story_register_result_state.dart';
 
 class RegisterProvider with ChangeNotifier {
 
-  final StoryRepository storyRepository;
+  final ApiService apiService;
 
-  RegisterProvider(this.storyRepository);
+  RegisterProvider(this.apiService);
 
   StoryRegisterResultState _state = StoryRegisterNoneState();
   StoryRegisterResultState get state => _state;
@@ -17,14 +18,11 @@ class RegisterProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final registerResponse = await storyRepository.register(name, email, password);
+      final registerResponse = await apiService.register(name, email, password);
       _state = StoryRegisterSuccessState(registerResponse);
     } catch (e) {
       _state = StoryRegisterErrorState(e.toString());
     }
     notifyListeners();
   }
-
-
-
 }
