@@ -42,9 +42,9 @@ class _MainAppState extends State<MainApp> {
         ChangeNotifierProvider(
             create: (context) => authProvider
         ),
-        // ChangeNotifierProvider(
-        //     create: (context) => RegisterProvider(apiService)
-        // ),
+        ChangeNotifierProvider(
+            create: (context) => RegisterProvider(apiService)
+        ),
       ],
       child: MaterialApp(
         theme: StoryTheme.lightTheme,

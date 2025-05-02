@@ -20,6 +20,25 @@ class _FormLoginState extends State<FormLogin> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
+  void initState() {
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.addListener(() {
+      if (authProvider.state is StoryLoginSuccessState) {
+        widget.toLogin();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login Successful")),
+        );
+      } else if (authProvider.state is StoryLoginErrorState) {
+        final errorMessage = (authProvider.state as StoryLoginErrorState).error;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      }
+    });
+    super.initState();
+  }
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -106,23 +125,6 @@ class _FormLoginState extends State<FormLogin> {
                 if (_formKey.currentState!.validate()) {
                   final authProvider = Provider.of<AuthProvider>(context, listen: false);
                   authProvider.login(_emailController.text, _passwordController.text);
-                  authProvider.addListener(() {
-                    if (authProvider.state is StoryLoginLoadingState) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Loading...")),
-                      );
-                    } else if (authProvider.state is StoryLoginSuccessState) {
-                      widget.toLogin();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Login Success")),
-                      );
-                    } else if (authProvider.state is StoryLoginErrorState) {
-                      final errorMessage = (authProvider.state as StoryLoginErrorState).error;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(errorMessage)),
-                      );
-                    }
-                  });
                 }
               },
               child: Consumer<AuthProvider>(

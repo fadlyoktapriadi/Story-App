@@ -38,7 +38,7 @@ class ApiService{
     }
   }
 
-  Future<LoginResponse> login(String email, String password) async {
+  Future login(String email, String password) async {
     try {
       final response = await http.post(
         Uri.parse('https://story-api.dicoding.dev/v1/login'),
@@ -55,7 +55,7 @@ class ApiService{
         return LoginResponse.fromJson(jsonDecode(response.body));
       }
       else if(response.statusCode == 400 || response.statusCode == 401) {
-        return LoginResponse.fromJson(jsonDecode(response.body));
+        return RegisterResponse.fromJson(jsonDecode(response.body));
         // respon error dengan respon login error json
       }
       else {
