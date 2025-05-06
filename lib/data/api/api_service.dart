@@ -3,11 +3,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:story_app/data/AuthRepository.dart';
 import 'package:story_app/data/api/response/login_response.dart';
 import 'package:story_app/data/api/response/register_response.dart';
+import 'package:story_app/data/api/response/story_response.dart';
 
 class ApiService{
-  static const String _baseUrl = 'https://story-api.dicoding.dev/v1';
+  static const String _baseUrl = 'https://story-api.dicoding.dev/v1/';
+
+  final AuthRepository authRepository = AuthRepository();
 
   Future<RegisterResponse> register(String name, String email, String password) async {
     try {
@@ -41,7 +45,7 @@ class ApiService{
   Future login(String email, String password) async {
     try {
       final response = await http.post(
-        Uri.parse('https://story-api.dicoding.dev/v1/login'),
+        Uri.parse('$_baseUrl/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -65,5 +69,38 @@ class ApiService{
       throw Exception('Failed to Login: ${e.toString()}');
 
     }
+  }
+
+  Future<StoryResponse> getAllStories() async {
+
+    final token = await authRepository.getToken();
+
+    debugPrint('Token: $token');
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://story-api.dicoding.dev/v1/stories'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        debugPrint('Response: ${response.body}');
+        return StoryResponse.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        debugPrint('Unauthorized ${response.statusCode}');
+        debugPrint('Unauthorized ${response.body}');
+        throw Exception('Unauthorized');
+      } else {
+        debugPrint('Failed to load stories ${response.statusCode}');
+        debugPrint('Failed to load stories ${response.body}');
+        throw Exception('Failed to load stories');
+      }
+    } catch (e){
+      debugPrint('Error catch : $e');
+      throw Exception('Failed to load stories catch: $e');
+    }
+
   }
 }
