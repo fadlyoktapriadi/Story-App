@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:story_app/data/AuthRepository.dart';
+import 'package:story_app/screen/detail/detail_screen.dart';
 import 'package:story_app/screen/home/home_screen.dart';
 import 'package:story_app/screen/login/login_screen.dart';
 import 'package:story_app/screen/register/register_screen.dart';
@@ -14,6 +15,7 @@ class MyRouterDelegate extends RouterDelegate
   List<Page> pages = [];
   bool? isLogin;
   bool? isRegister = false;
+  String? selectedStory;
 
   MyRouterDelegate(this.authRepository) :
         _navigatorKey = GlobalKey<NavigatorState>(){
@@ -42,6 +44,10 @@ class MyRouterDelegate extends RouterDelegate
       onDidRemovePage: (page) {
         if (page.key == const ValueKey("RegisterPage")) {
           isRegister = false;
+          notifyListeners();
+        }
+        if (page.key == ValueKey(selectedStory)) {
+          selectedStory = null;
           notifyListeners();
         }
       },
@@ -75,10 +81,6 @@ class MyRouterDelegate extends RouterDelegate
       MaterialPage(
         key: const ValueKey("RegisterPage"),
         child: RegisterScreen(
-          // onRegister: () {
-          //   isRegister = false;
-          //   notifyListeners();
-          // },
           toLogin: () {
             isRegister = false;
             notifyListeners();
@@ -90,8 +92,28 @@ class MyRouterDelegate extends RouterDelegate
   List<Page> get _loggedInStack => [
     MaterialPage(
       key: const ValueKey("HomePage"),
-      child: HomeScreen(),
+      child: HomeScreen(
+        onTap: (String storyId) {
+          selectedStory = storyId;
+          notifyListeners();
+        },
+        onLogout: () {
+          isLogin = false;
+          notifyListeners();
+        },
+      ),
     ),
+    if (selectedStory != null)
+      MaterialPage(
+        key: ValueKey(selectedStory),
+        child: DetailScreen(
+          id: selectedStory!,
+          onBack: () {
+            selectedStory = null;
+            notifyListeners();
+          },
+        ),
+      ),
   ];
 
   @override

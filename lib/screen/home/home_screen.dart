@@ -5,7 +5,10 @@ import 'package:story_app/result/story_stories_result_state.dart';
 import 'package:story_app/screen/components/item_card_story.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final Function(String) onTap;
+  final Function() onLogout;
+
+  const HomeScreen({super.key, required this.onTap, required this.onLogout});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -42,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              // Handle logout action
+              widget.onLogout();
             },
           ),
         ],
@@ -73,7 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   final story = stories[index];
                   return ItemCardStory(
                     onTap: () {
-                      // Handle item tap
+                      widget.onTap(
+                        story.id,
+                      );
                     },
                     story: story,
                   );

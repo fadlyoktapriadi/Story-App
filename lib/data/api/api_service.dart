@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:story_app/data/AuthRepository.dart';
 import 'package:story_app/data/api/response/login_response.dart';
 import 'package:story_app/data/api/response/register_response.dart';
+import 'package:story_app/data/api/response/story_detail_response.dart';
 import 'package:story_app/data/api/response/story_response.dart';
 
 class ApiService{
@@ -74,8 +75,6 @@ class ApiService{
 
     final token = await authRepository.getToken();
 
-    debugPrint('Token: $token');
-
     try {
       final response = await http.get(
         Uri.parse('https://story-api.dicoding.dev/v1/stories'),
@@ -94,6 +93,28 @@ class ApiService{
     } catch (e){
       throw Exception('Failed to load stories catch: $e');
     }
+  }
 
+  Future<StoryDetailResponse> getStoryDetail(String id) async {
+    final token = await authRepository.getToken();
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://story-api.dicoding.dev/v1/stories/$id'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return StoryDetailResponse.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized');
+      } else {
+        throw Exception('Failed to load story detail');
+      }
+    } catch (e){
+      throw Exception('Failed to load story detail catch: $e');
+    }
   }
 }
