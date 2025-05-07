@@ -19,10 +19,8 @@ class HomeProvider extends  ChangeNotifier {
     try {
       final storiesResponse = await apiService.getAllStories();
       _state = StoryStoriesSuccessState(storiesResponse);
-      debugPrint('Stories: ${storiesResponse.listStory}');
     } catch (e) {
       _state = StoryStoriesErrorState(e.toString());
-      debugPrint('Error: $e');
     } finally {
       notifyListeners();
     }

@@ -10,7 +10,7 @@ final myTextTheme = TextTheme(
     fontSize: 45,
   ),
   displaySmall: GoogleFonts.hammersmithOne(
-    fontSize: 36,
+    fontSize: 32,
   ),
   headlineLarge: GoogleFonts.figtree(
     fontSize: 32,

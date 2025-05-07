@@ -60,7 +60,6 @@ class ApiService{
       }
       else if(response.statusCode == 400 || response.statusCode == 401) {
         return RegisterResponse.fromJson(jsonDecode(response.body));
-        // respon error dengan respon login error json
       }
       else {
         throw Exception('Failed to Login');
@@ -86,19 +85,13 @@ class ApiService{
       );
 
       if (response.statusCode == 200) {
-        debugPrint('Response: ${response.body}');
         return StoryResponse.fromJson(jsonDecode(response.body));
       } else if (response.statusCode == 401) {
-        debugPrint('Unauthorized ${response.statusCode}');
-        debugPrint('Unauthorized ${response.body}');
         throw Exception('Unauthorized');
       } else {
-        debugPrint('Failed to load stories ${response.statusCode}');
-        debugPrint('Failed to load stories ${response.body}');
         throw Exception('Failed to load stories');
       }
     } catch (e){
-      debugPrint('Error catch : $e');
       throw Exception('Failed to load stories catch: $e');
     }
 
