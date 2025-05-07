@@ -50,13 +50,17 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // Future<void> getLogin() async {
-  //   try {
-  //     _loginSession = await authRepository.getLogin();
-  //     debugPrint('Login Session: $_loginSession');
-  //   } catch (e) {
-  //     debugPrint('Error: $e');
-  //   }
-  //   notifyListeners();
-  // }
+  Future<bool> logout() async {
+    isLoadingLogout = true;
+    notifyListeners();
+    final logout = await authRepository.logout();
+    if (logout) {
+      await authRepository.deleteToken();
+    }
+    // isLoggedIn = await authRepository.isLoggedIn();
+    // isLoadingLogout = false;
+    notifyListeners();
+    return !isLoggedIn;
+  }
+
 }

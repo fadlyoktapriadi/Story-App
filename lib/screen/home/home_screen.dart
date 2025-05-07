@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/provider/home/home_provider.dart';
+import 'package:story_app/provider/login/auth_provider.dart';
 import 'package:story_app/result/story_stories_result_state.dart';
 import 'package:story_app/screen/components/item_card_story.dart';
 
@@ -44,7 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
+            onPressed: () async {
+              // Handle logout action
+              await context.read<AuthProvider>().logout();
               widget.onLogout();
             },
           ),
