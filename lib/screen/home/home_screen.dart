@@ -8,8 +8,9 @@ import 'package:story_app/screen/components/item_card_story.dart';
 class HomeScreen extends StatefulWidget {
   final Function(String) onTap;
   final Function() onLogout;
+  final Function() onAddStory;
 
-  const HomeScreen({super.key, required this.onTap, required this.onLogout});
+  const HomeScreen({super.key, required this.onTap, required this.onLogout, required this.onAddStory});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -54,8 +55,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         onPressed: () {
-          // Handle add story action
+          widget.onAddStory();
         },
         child: const Icon(Icons.add_a_photo_outlined),
       ),

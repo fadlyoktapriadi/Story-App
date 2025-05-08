@@ -6,7 +6,7 @@ import 'package:story_app/result/story_detail_reslt_state.dart';
 
 class DetailScreen extends StatefulWidget {
   final String id;
-  final VoidCallback onBack;
+  final Function() onBack;
 
   const DetailScreen({super.key, required this.id, required this.onBack});
 
@@ -45,7 +45,7 @@ class _DetailScreenState extends State<DetailScreen> {
               return Stack(
                 children: [
                   Hero(
-                    tag: story.photoUrl,
+                    tag: story.id,
                     child: Image.network(
                       story.photoUrl,
                       width: MediaQuery.of(context).size.width,

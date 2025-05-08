@@ -26,10 +26,13 @@ class ItemCardStory extends StatelessWidget {
                 const SizedBox(height: 8),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    story.photoUrl,
-                    fit: BoxFit.cover,
-                    height: 200,
+                  child: Hero(
+                    tag: story.id,
+                    child: Image.network(
+                      story.photoUrl,
+                      fit: BoxFit.cover,
+                      height: 200,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:story_app/data/AuthRepository.dart';
 import 'package:story_app/data/api/api_service.dart';
 import 'package:story_app/data/local/preferences/shared_preference_service.dart';
+import 'package:story_app/provider/add/add_provider.dart';
 import 'package:story_app/provider/detail/detail_provider.dart';
 import 'package:story_app/provider/home/home_provider.dart';
 import 'package:story_app/provider/login/auth_provider.dart';
@@ -52,6 +53,9 @@ class _MainAppState extends State<MainApp> {
         ),
         ChangeNotifierProvider(
             create: (context) => DetailProvider(apiService)
+        ),
+        ChangeNotifierProvider(
+            create: (context) => AddProvider()
         )
       ],
       child: MaterialApp(

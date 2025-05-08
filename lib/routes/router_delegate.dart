@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:story_app/data/AuthRepository.dart';
+import 'package:story_app/screen/add/add_story_screen.dart';
 import 'package:story_app/screen/detail/detail_screen.dart';
 import 'package:story_app/screen/home/home_screen.dart';
 import 'package:story_app/screen/login/login_screen.dart';
@@ -16,6 +17,8 @@ class MyRouterDelegate extends RouterDelegate
   bool? isLogin;
   bool? isRegister = false;
   String? selectedStory;
+  bool? isAddStory = false;
+
 
   MyRouterDelegate(this.authRepository) :
         _navigatorKey = GlobalKey<NavigatorState>(){
@@ -48,6 +51,10 @@ class MyRouterDelegate extends RouterDelegate
         }
         if (page.key == ValueKey(selectedStory)) {
           selectedStory = null;
+          notifyListeners();
+        }
+        if (page.key == const ValueKey("AddStoryPage")) {
+          isAddStory = false;
           notifyListeners();
         }
       },
@@ -101,6 +108,10 @@ class MyRouterDelegate extends RouterDelegate
           isLogin = false;
           notifyListeners();
         },
+        onAddStory: () {
+          isAddStory = true;
+          notifyListeners();
+        },
       ),
     ),
     if (selectedStory != null)
@@ -114,6 +125,17 @@ class MyRouterDelegate extends RouterDelegate
           },
         ),
       ),
+    if (isAddStory == true)
+      MaterialPage(
+        key: const ValueKey("AddStoryPage"),
+        child: AddStoryScreen(
+          onBack: () {
+            isAddStory = false;
+            notifyListeners();
+          },
+        ),
+      ),
+
   ];
 
   @override
