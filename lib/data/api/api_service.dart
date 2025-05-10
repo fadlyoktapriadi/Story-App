@@ -1,9 +1,11 @@
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:story_app/data/AuthRepository.dart';
+import 'package:story_app/data/api/response/add_story_response.dart';
 import 'package:story_app/data/api/response/login_response.dart';
 import 'package:story_app/data/api/response/register_response.dart';
 import 'package:story_app/data/api/response/story_detail_response.dart';
@@ -77,7 +79,7 @@ class ApiService{
 
     try {
       final response = await http.get(
-        Uri.parse('https://story-api.dicoding.dev/v1/stories'),
+        Uri.parse('$_baseUrl/stories'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -100,7 +102,7 @@ class ApiService{
 
     try {
       final response = await http.get(
-        Uri.parse('https://story-api.dicoding.dev/v1/stories/$id'),
+        Uri.parse('$_baseUrl/stories/$id'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -118,12 +120,15 @@ class ApiService{
     }
   }
 
-  Future<UploadResponse> uploadDocument(
+  Future<AddStoryResponse> uploadStory(
       List<int> bytes,
       String fileName,
       String description,
       ) async {
-    const String url = "https://story-api.dicoding.dev/v1/stories/guest";
+
+    final token = await authRepository.getToken();
+
+    const String url = "$_baseUrl/stories";
 
     final uri = Uri.parse(url);
     var request = http.MultipartRequest('POST', uri);
@@ -138,6 +143,7 @@ class ApiService{
     };
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
+      "Authorization": "Bearer $token"
     };
 
     request.files.add(multiPartFile);
@@ -150,11 +156,11 @@ class ApiService{
     final Uint8List responseList = await streamedResponse.stream.toBytes();
     final String responseData = String.fromCharCodes(responseList);
 
-    if (statusCode == 201) {
-      final UploadResponse uploadResponse = UploadResponse.fromJson(
-        responseData,
+    if (statusCode == 201 || statusCode == 200) {
+      final AddStoryResponse addStoryResponse = AddStoryResponse.fromJson(
+        jsonDecode(responseData),
       );
-      return uploadResponse;
+      return addStoryResponse;
     } else {
       throw Exception("Upload file error");
     }

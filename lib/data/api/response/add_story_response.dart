@@ -23,4 +23,5 @@ class AddStoryResponse {
     "error": error,
     "message": message,
   };
+
 }

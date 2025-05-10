@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/provider/detail/detail_provider.dart';
-import 'package:story_app/result/story_detail_reslt_state.dart';
+import 'package:story_app/result/story_detail_result_state.dart';
 
 class DetailScreen extends StatefulWidget {
   final String id;
@@ -49,7 +49,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     child: Image.network(
                       story.photoUrl,
                       width: MediaQuery.of(context).size.width,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                       height: 320,
                     ),
                   ),

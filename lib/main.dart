@@ -55,7 +55,7 @@ class _MainAppState extends State<MainApp> {
             create: (context) => DetailProvider(apiService)
         ),
         ChangeNotifierProvider(
-            create: (context) => AddProvider()
+            create: (context) => AddProvider(apiService)
         )
       ],
       child: MaterialApp(

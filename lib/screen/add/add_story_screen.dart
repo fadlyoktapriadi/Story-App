@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/provider/add/add_provider.dart';
+import 'package:story_app/provider/home/home_provider.dart';
+import 'package:story_app/result/story_add_story_result_state.dart';
 
 class AddStoryScreen extends StatefulWidget {
   final Function() onBack;
@@ -16,15 +18,34 @@ class AddStoryScreen extends StatefulWidget {
 }
 
 class _AddStoryScreenState extends State<AddStoryScreen> {
-
   final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
-    _descriptionController.dispose();
+    final addProvider = Provider.of<AddProvider>(context, listen: false);
+    addProvider.addListener(() {
+      if (addProvider.state is StoryAddStoryResultStateSuccess) {
+        context.read<HomeProvider>().getStories();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Story Uploaded Successfully")),
+        );
+        widget.onBack();
+
+      } else if (addProvider.state is StoryAddStoryResultStateError) {
+        final errorMessage = (addProvider.state as StoryAddStoryResultStateError).error;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      }
+    });
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +72,15 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                   style: ElevatedButton.styleFrom(
                     // minimumSize: const Size.fromHeight(50), // Full-width button
                     backgroundColor:
-                    Theme.of(context).colorScheme.tertiary, // Primary color
+                        Theme.of(context).colorScheme.tertiary, // Primary color
                     foregroundColor:
-                    Theme.of(
-                      context,
-                    ).colorScheme.onTertiary, // Text color on primary
+                        Theme.of(
+                          context,
+                        ).colorScheme.onTertiary, // Text color on primary
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20), // Rounded corners
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ), // Rounded corners
                     ),
                   ),
                   onPressed: () {
@@ -70,7 +93,9 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                       const SizedBox(width: 8),
                       Text(
                         "Gallery",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onTertiary,
                         ),
                       ),
@@ -81,13 +106,15 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                   style: ElevatedButton.styleFrom(
                     // minimumSize: const Size.fromHeight(50), // Full-width button
                     backgroundColor:
-                    Theme.of(context).colorScheme.tertiary, // Primary color
+                        Theme.of(context).colorScheme.tertiary, // Primary color
                     foregroundColor:
-                    Theme.of(
-                      context,
-                    ).colorScheme.onTertiary, // Text color on primary
+                        Theme.of(
+                          context,
+                        ).colorScheme.onTertiary, // Text color on primary
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20), // Rounded corners
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ), // Rounded corners
                     ),
                   ),
                   onPressed: () {
@@ -100,7 +127,9 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                       const SizedBox(width: 8),
                       Text(
                         "Camera",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onTertiary,
                         ),
                       ),
@@ -140,18 +169,46 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                 onPressed: () {
                   _uploadStory();
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.send),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Upload Story",
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                child: Consumer<AddProvider>(
+                  builder: (context, value, child) {
+                    return switch (value.state) {
+                      StoryAddStoryResultStateLoading() => Center(
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                       ),
-                    ),
-                  ],
+                      StoryAddStoryResultStateSuccess() => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.send),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Upload Story",
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      _ => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.send),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Upload Story",
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    };
+                  },
                 ),
               ),
             ),
@@ -188,9 +245,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
 
     final picker = ImagePicker();
 
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.camera,
-    );
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       provider.setImageFile(pickedFile);
@@ -199,7 +254,6 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
   }
 
   _showImage() {
-    /// todo-click-06: update the widget to show the image
     final imagePath = context.read<AddProvider>().imagePath;
     return kIsWeb
         ? Image.network(imagePath.toString(), fit: BoxFit.contain)
@@ -207,17 +261,44 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
   }
 
   _uploadStory() async {
-    final homeProvider = context.read<AddProvider>();
-    final imagePath = homeProvider.imagePath;
-    final imageFile = homeProvider.imageFile;
-    if (imagePath == null || imageFile == null) return;
+    final addProvider = context.read<AddProvider>();
+    final imagePath = addProvider.imagePath;
+    final imageFile = addProvider.imageFile;
 
-    final fileName = imageFile.name;
-    final bytes = await imageFile.readAsBytes();
+    final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(
+      context,
+    );
 
+    if (imagePath == null || imageFile == null) {
+      scaffoldMessengerState.showSnackBar(
+        const SnackBar(content: Text("Please select an image")),
+      );
+      return;
+    }
 
+    if (_descriptionController.text.isEmpty) {
+      scaffoldMessengerState.showSnackBar(
+        const SnackBar(content: Text("Please enter a description")),
+      );
+      return;
+    }
 
+    try {
+      final fileName = imageFile.name;
+      final bytes = await imageFile.readAsBytes();
+      final newBytes = await addProvider.compressImage(bytes);
 
-
+      await addProvider.uploadStory(
+        newBytes,
+        fileName,
+        _descriptionController.text,
+      );
+    } catch (e) {
+      scaffoldMessengerState.showSnackBar(
+        SnackBar(content: Text("Failed to upload story: $e")),
+      );
+    } finally {
+      addProvider.clearImage();
+    }
   }
 }

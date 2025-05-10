@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:story_app/data/api/api_service.dart';
-import 'package:story_app/result/story_detail_reslt_state.dart';
+import 'package:story_app/result/story_detail_result_state.dart';
 
 class DetailProvider with ChangeNotifier {
   final ApiService apiService;
