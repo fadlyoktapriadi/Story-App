@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/screen/login/form_login.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -33,9 +34,9 @@ class LoginScreen extends StatelessWidget {
                 height: 150, // Optional: Set height
               ),
               const SizedBox(height: 20),
-              Text("Welcome to Storyfy", style: Theme.of(context).textTheme.titleLarge),
+              Text(AppLocalizations.of(context)!.loginWelcome, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 10),
-              Text("Sign up or register bellow to share your story", style: Theme.of(context).textTheme.labelLarge),
+              Text(AppLocalizations.of(context)!.smallLoginTitle, style: Theme.of(context).textTheme.labelLarge),
 
               FormLogin(
                 toLogin: toLogin,

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/provider/add/add_provider.dart';
 import 'package:story_app/provider/home/home_provider.dart';
 import 'package:story_app/result/story_add_story_result_state.dart';
@@ -50,7 +51,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Story")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.titleAddStory)),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -144,8 +145,8 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
               child: TextFormField(
                 controller: _descriptionController,
                 maxLines: 7,
-                decoration: const InputDecoration(
-                  hintText: "Write a description",
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.placeholderDescription,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -183,7 +184,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                           const Icon(Icons.send),
                           const SizedBox(width: 8),
                           Text(
-                            "Upload Story",
+                            AppLocalizations.of(context)!.uploadStory,
                             style: Theme.of(
                               context,
                             ).textTheme.titleMedium?.copyWith(
@@ -198,7 +199,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                           const Icon(Icons.send),
                           const SizedBox(width: 8),
                           Text(
-                            "Upload Story",
+                            AppLocalizations.of(context)!.uploadStory,
                             style: Theme.of(
                               context,
                             ).textTheme.titleMedium?.copyWith(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/provider/login/auth_provider.dart';
 import 'package:story_app/result/story_login_result_state.dart';
 
@@ -64,7 +65,7 @@ class _FormLoginState extends State<FormLogin> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    hintText: "Enter your email",
+                    hintText: AppLocalizations.of(context)!.placeholderEmail,
                     prefixIcon: Icon(Icons.email_outlined),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -94,7 +95,7 @@ class _FormLoginState extends State<FormLogin> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    hintText: "Enter your password",
+                    hintText: AppLocalizations.of(context)!.placeholderPassword,
                     prefixIcon: Icon(Icons.lock_outline),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -136,13 +137,13 @@ class _FormLoginState extends State<FormLogin> {
                       ),
                     ),
                     StoryLoginSuccessState() => Text(
-                      "Sign In",
+                      AppLocalizations.of(context)!.loginButton,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                     _ => Text(
-                      "Sign In",
+                      AppLocalizations.of(context)!.loginButton,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -164,7 +165,7 @@ class _FormLoginState extends State<FormLogin> {
               onPressed: () {
                 widget.toRegister();
               },
-              child: Text("Sign Up",
+              child: Text(AppLocalizations.of(context)!.registerButton,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
                   )),

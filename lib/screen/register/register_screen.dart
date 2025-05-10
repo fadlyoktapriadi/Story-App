@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/screen/register/form_register.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -27,8 +28,7 @@ class RegisterScreen extends StatelessWidget {
                 height: 150, // Optional: Set height
               ),
               const SizedBox(height: 10),
-              Text("Create your account and share your story with Storyfy", style: Theme.of(context).textTheme.labelLarge),
-
+              Text(AppLocalizations.of(context)!.registerTitle, style: Theme.of(context).textTheme.labelLarge),
               FormRegister(
                 toLogin: toLogin,
               )

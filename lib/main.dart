@@ -12,6 +12,8 @@ import 'package:story_app/provider/register/register_provider.dart';
 import 'package:story_app/routes/router_delegate.dart';
 import 'package:story_app/styles/theme/story_theme.dart';
 
+import 'common.dart';
+
 void main() {
   runApp(const MainApp());
 }
@@ -62,6 +64,8 @@ class _MainAppState extends State<MainApp> {
         theme: StoryTheme.lightTheme,
         darkTheme: StoryTheme.darkTheme,
         themeMode: ThemeMode.system,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Router(
           routerDelegate: myRouterDelegate,
           backButtonDispatcher: RootBackButtonDispatcher(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/provider/register/register_provider.dart';
 import 'package:story_app/result/story_register_result_state.dart';
 
@@ -44,7 +45,7 @@ class _FormRegisterState extends State<FormRegister> {
                   TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    hintText: "Enter your Name",
+                    hintText: AppLocalizations.of(context)!.placeholderName,
                     prefixIcon: Icon(Icons.person_outline),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -69,7 +70,7 @@ class _FormRegisterState extends State<FormRegister> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    hintText: "Enter your email",
+                    hintText: AppLocalizations.of(context)!.placeholderEmail,
                     prefixIcon: Icon(Icons.email_outlined),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -96,7 +97,7 @@ class _FormRegisterState extends State<FormRegister> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    hintText: "Enter your password",
+                    hintText: AppLocalizations.of(context)!.placeholderPassword,
                     prefixIcon: Icon(Icons.lock_outline),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -177,13 +178,13 @@ class _FormRegisterState extends State<FormRegister> {
                       ),
                     ),
                     StoryRegisterSuccessState() => Text(
-                      "Sign Up",
+                      AppLocalizations.of(context)!.registerButton,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                     _ => Text(
-                      "Sign Up",
+                      AppLocalizations.of(context)!.registerButton,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -195,10 +196,10 @@ class _FormRegisterState extends State<FormRegister> {
             const SizedBox(height: 15),
             TextButton(
               onPressed: () {
-                // toLogin();
+                widget.toLogin();
               },
               child: Text(
-                "Already have an account? Login",
+                AppLocalizations.of(context)!.alreadyHaveAccount,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),

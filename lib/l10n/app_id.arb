@@ -1,0 +1,14 @@
+{
+  "loginWelcome": "Selamat datang di Storyfy",
+  "smallLoginTitle": "Masuk atau daftar dibawah untuk berbagi cerita kamu",
+  "placeholderEmail": "Masukan email kamu",
+  "placeholderPassword": "Masukan password kamu",
+  "loginButton": "Masuk",
+  "registerButton": "Daftar",
+  "registerTitle": "Buat akun dan mulai berbagai cerita kamu bersama Storyfy",
+  "placeholderName": "Masukan nama kamu",
+  "alreadyHaveAccount": "Sudah punya akun? masuk",
+  "titleAddStory": "Tambah Cerita",
+  "placeholderDescription": "Masukan deskripsi cerita",
+  "uploadStory": "Kirim Cerita"
+}

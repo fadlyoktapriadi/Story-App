@@ -1,0 +1,14 @@
+{
+  "loginWelcome": "Welcome to Storyfy",
+  "smallLoginTitle": "Sign in or register bellow to share your story",
+  "placeholderEmail": "Enter your email",
+  "placeholderPassword": "Enter your password",
+  "loginButton": "Sign In",
+  "registerButton": "Sign Up",
+  "registerTitle": "Create an account and start sharing your story with Storyfy",
+  "placeholderName": "Enter your name",
+  "alreadyHaveAccount": "Already have an account? Sign in",
+  "titleAddStory": "Add Story",
+  "placeholderDescription": "Enter a description",
+  "uploadStory": "Upload Story"
+}

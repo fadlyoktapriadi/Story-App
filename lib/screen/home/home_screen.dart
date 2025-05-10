@@ -39,12 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              // Handle logout action
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               // Handle logout action
