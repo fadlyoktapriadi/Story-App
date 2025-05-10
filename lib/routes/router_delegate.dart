@@ -61,15 +61,6 @@ class MyRouterDelegate extends RouterDelegate
     );
   }
 
-  List<Page> get _splashStack => const [
-    MaterialPage(
-      key: ValueKey("SplashPage"),
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    ),
-  ];
-
   List<Page> get _loggedOutStack => [
     MaterialPage(
       key: const ValueKey("LoginPage"),

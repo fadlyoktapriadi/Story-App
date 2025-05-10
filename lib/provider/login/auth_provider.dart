@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:story_app/data/AuthRepository.dart';
 import 'package:story_app/data/api/api_service.dart';
-import 'package:story_app/data/model/login_model.dart';
 import 'package:story_app/result/story_login_result_state.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -14,9 +13,6 @@ class AuthProvider extends ChangeNotifier {
 
   StoryLoginResultState get state => _state;
 
-  bool isLoadingLogin = false;
-  bool isLoadingRegister = false;
-  bool isLoadingLogout = false;
   bool isLoggedIn = false;
 
   String message = "";
@@ -51,8 +47,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> logout() async {
-    isLoadingLogout = true;
-    notifyListeners();
     final logout = await authRepository.logout();
     if (logout) {
       await authRepository.deleteToken();

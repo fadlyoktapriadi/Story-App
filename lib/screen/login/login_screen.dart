@@ -1,6 +1,4 @@
 
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:story_app/common.dart';

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/data/AuthRepository.dart';
 import 'package:story_app/data/api/api_service.dart';
-import 'package:story_app/data/local/preferences/shared_preference_service.dart';
 import 'package:story_app/provider/add/add_provider.dart';
 import 'package:story_app/provider/detail/detail_provider.dart';
 import 'package:story_app/provider/home/home_provider.dart';
@@ -11,8 +10,6 @@ import 'package:story_app/provider/login/auth_provider.dart';
 import 'package:story_app/provider/register/register_provider.dart';
 import 'package:story_app/routes/router_delegate.dart';
 import 'package:story_app/styles/theme/story_theme.dart';
-
-import 'common.dart';
 
 void main() {
   runApp(const MainApp());

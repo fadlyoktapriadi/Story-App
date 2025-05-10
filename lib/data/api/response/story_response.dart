@@ -1,9 +1,5 @@
-// To parse this JSON data, do
-//
-//     final storyResponse = storyResponseFromJson(jsonString);
 
 import 'dart:convert';
-
 import 'package:story_app/data/api/response/story_detail_response.dart';
 
 StoryResponse storyResponseFromJson(String str) => StoryResponse.fromJson(json.decode(str));
