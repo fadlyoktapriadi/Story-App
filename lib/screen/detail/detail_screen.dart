@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/provider/detail/detail_provider.dart';
@@ -15,12 +16,27 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  final Set<Marker> markers = {};
+
+  // Add this method to _DetailScreenState class
+  void _defineMarker(LatLng latLng, String street, String address) {
+    final marker = Marker(
+      markerId: const MarkerId("story_location"),
+      position: latLng,
+      infoWindow: InfoWindow(title: street, snippet: address),
+    );
+
+    setState(() {
+      markers.add(marker);
+    });
+  }
 
   @override
   void initState() {
     Future.microtask(() {
       context.read<DetailProvider>().getDetailStory(widget.id);
     });
+
     super.initState();
   }
 
@@ -30,7 +46,7 @@ class _DetailScreenState extends State<DetailScreen> {
       appBar: AppBar(
         title: Text(
           "Detail Story",
-          style: Theme.of(context).textTheme.headlineSmall
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
       body: SafeArea(
@@ -39,9 +55,12 @@ class _DetailScreenState extends State<DetailScreen> {
             if (provider.state is StoryDetailLoadingState) {
               return const Center(child: CircularProgressIndicator());
             } else if (provider.state is StoryDetailErrorState) {
-              return Center(child: Text((provider.state as StoryDetailErrorState).error));
+              return Center(
+                child: Text((provider.state as StoryDetailErrorState).error),
+              );
             } else if (provider.state is StoryDetailSuccessState) {
-              final story = (provider.state as StoryDetailSuccessState).story.story;
+              final story =
+                  (provider.state as StoryDetailSuccessState).story.story;
               return Stack(
                 children: [
                   Hero(
@@ -68,12 +87,16 @@ class _DetailScreenState extends State<DetailScreen> {
                           children: [
                             const SizedBox(height: 20),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 10,
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -81,15 +104,23 @@ class _DetailScreenState extends State<DetailScreen> {
                                           const SizedBox(width: 4),
                                           Text(
                                             story.name,
-                                            style: Theme.of(context).textTheme.bodySmall,
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
                                       ),
                                       Text(
-                                        DateFormat('yyyy-MM-dd HH:mm').format(story.createdAt),
-                                        style: Theme.of(context).textTheme.bodySmall,
+                                        DateFormat(
+                                          'yyyy-MM-dd HH:mm',
+                                        ).format(story.createdAt),
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.bodySmall,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -98,14 +129,35 @@ class _DetailScreenState extends State<DetailScreen> {
                                   const SizedBox(height: 15),
                                   Text(
                                     story.description,
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
-                                  const SizedBox(height: 15),
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 15),
-
+                            if (story.lat != null && story.lon != null) ...[
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: 300,
+                                child: GoogleMap(
+                                  initialCameraPosition: CameraPosition(
+                                    target: LatLng(story.lat!, story.lon!),
+                                    zoom: 15,
+                                  ),
+                                  markers: markers,
+                                  zoomControlsEnabled: true,
+                                  mapToolbarEnabled: true,
+                                  myLocationButtonEnabled: false,
+                                  onMapCreated: (controller) {
+                                    _defineMarker(
+                                      LatLng(story.lat!, story.lon!),
+                                      story.name,
+                                      story.description,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -117,7 +169,7 @@ class _DetailScreenState extends State<DetailScreen> {
             return const SizedBox.shrink();
           },
         ),
-    )
+      ),
     );
   }
 }
