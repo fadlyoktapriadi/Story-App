@@ -13,6 +13,7 @@ class AddProvider extends ChangeNotifier {
   XFile? imageFile;
 
   StoryAddStoryResultState _state = StoryAddStoryNoneState();
+
   StoryAddStoryResultState get state => _state;
 
   void setImagePath(String? value) {
@@ -26,16 +27,23 @@ class AddProvider extends ChangeNotifier {
   }
 
   Future<void> uploadStory(
-      List<int> bytes,
-      String fileName,
-      String description,
-      ) async {
-
+    List<int> bytes,
+    String fileName,
+    String description, {
+    double? lat,
+    double? lon,
+  }) async {
     _state = StoryAddStoryResultStateLoading();
     notifyListeners();
 
     try {
-      final response = await apiService.uploadStory(bytes, fileName, description);
+      final response = await apiService.uploadStory(
+        bytes,
+        fileName,
+        description,
+        lat: lat,
+        lon: lon,
+      );
       _state = StoryAddStoryResultStateSuccess(response);
     } catch (e) {
       _state = StoryAddStoryResultStateError(e.toString());
@@ -56,10 +64,7 @@ class AddProvider extends ChangeNotifier {
     do {
       compressQuality -= 10;
 
-      newByte = img.encodeJpg(
-        image,
-        quality: compressQuality,
-      );
+      newByte = img.encodeJpg(image, quality: compressQuality);
 
       length = newByte.length;
     } while (length > 1000000);

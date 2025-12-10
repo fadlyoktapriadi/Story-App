@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/provider/detail/detail_provider.dart';
 import 'package:story_app/result/story_detail_result_state.dart';
+
+import '../components/placemark_comp.dart';
 
 class DetailScreen extends StatefulWidget {
   final String id;
@@ -17,13 +20,13 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   final Set<Marker> markers = {};
+  geo.Placemark? placemark;
 
-  // Add this method to _DetailScreenState class
-  void _defineMarker(LatLng latLng, String street, String address) {
+  void _defineMarker(LatLng latLng, String name) {
     final marker = Marker(
       markerId: const MarkerId("story_location"),
       position: latLng,
-      infoWindow: InfoWindow(title: street, snippet: address),
+      infoWindow: InfoWindow(title: name),
     );
 
     setState(() {
@@ -139,22 +142,41 @@ class _DetailScreenState extends State<DetailScreen> {
                               const SizedBox(height: 12),
                               SizedBox(
                                 height: 300,
-                                child: GoogleMap(
-                                  initialCameraPosition: CameraPosition(
-                                    target: LatLng(story.lat!, story.lon!),
-                                    zoom: 15,
-                                  ),
-                                  markers: markers,
-                                  zoomControlsEnabled: true,
-                                  mapToolbarEnabled: true,
-                                  myLocationButtonEnabled: false,
-                                  onMapCreated: (controller) {
-                                    _defineMarker(
-                                      LatLng(story.lat!, story.lon!),
-                                      story.name,
-                                      story.description,
-                                    );
-                                  },
+                                child: Stack(
+                                  children: [
+                                    GoogleMap(
+                                      initialCameraPosition: CameraPosition(
+                                        target: LatLng(story.lat!, story.lon!),
+                                        zoom: 15,
+                                      ),
+                                      markers: markers,
+                                      mapToolbarEnabled: true,
+                                      myLocationButtonEnabled: false,
+                                      onMapCreated: (controller) async {
+                                        _defineMarker(
+                                          LatLng(story.lat!, story.lon!),
+                                          story.name
+                                        );
+                                        final info = await geo.placemarkFromCoordinates(
+                                          story.lat!,
+                                          story.lon!,
+                                        );
+                                        final place = info[0];
+                                        setState(() {
+                                          placemark = place;
+                                        });
+                                      },
+                                    ),
+                                    if (placemark == null)
+                                      const SizedBox()
+                                    else
+                                      Positioned(
+                                        bottom: 16,
+                                        right: 16,
+                                        left: 16,
+                                        child: PlacemarkWidget(placemark: placemark!),
+                                      ),
+                                  ],
                                 ),
                               ),
                             ],

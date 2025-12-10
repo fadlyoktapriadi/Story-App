@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:story_app/data/AuthRepository.dart';
 import 'package:story_app/data/api/response/add_story_response.dart';
@@ -9,37 +10,32 @@ import 'package:story_app/data/api/response/register_response.dart';
 import 'package:story_app/data/api/response/story_detail_response.dart';
 import 'package:story_app/data/api/response/story_response.dart';
 
-class ApiService{
+class ApiService {
   static const String _baseUrl = 'https://story-api.dicoding.dev/v1/';
 
   final AuthRepository authRepository = AuthRepository();
 
-  Future<RegisterResponse> register(String name, String email, String password) async {
+  Future<RegisterResponse> register(
+    String name,
+    String email,
+    String password,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$_baseUrl/register'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'password': password,
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );
 
       if (response.statusCode == 201) {
         return RegisterResponse.fromJson(jsonDecode(response.body));
-      }
-      else if(response.statusCode == 400) {
+      } else if (response.statusCode == 400) {
         return RegisterResponse.fromJson(jsonDecode(response.body));
-      }
-      else {
+      } else {
         throw Exception('Failed to register');
       }
     } catch (e) {
       throw Exception('Failed to register: $e');
-
     }
   }
 
@@ -47,40 +43,29 @@ class ApiService{
     try {
       final response = await http.post(
         Uri.parse('$_baseUrl/login'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
       if (response.statusCode == 200) {
         return LoginResponse.fromJson(jsonDecode(response.body));
-      }
-      else if(response.statusCode == 400 || response.statusCode == 401) {
+      } else if (response.statusCode == 400 || response.statusCode == 401) {
         return RegisterResponse.fromJson(jsonDecode(response.body));
-      }
-      else {
+      } else {
         throw Exception('Failed to Login');
       }
     } catch (e) {
       throw Exception('Failed to Login: ${e.toString()}');
-
     }
   }
 
   Future<StoryResponse> getAllStories() async {
-
     final token = await authRepository.getToken();
 
     try {
       final response = await http.get(
         Uri.parse('$_baseUrl/stories'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
+        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
@@ -90,7 +75,7 @@ class ApiService{
       } else {
         throw Exception('Failed to load stories');
       }
-    } catch (e){
+    } catch (e) {
       throw Exception('Failed to load stories catch: $e');
     }
   }
@@ -101,9 +86,7 @@ class ApiService{
     try {
       final response = await http.get(
         Uri.parse('$_baseUrl/stories/$id'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
+        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
@@ -113,17 +96,18 @@ class ApiService{
       } else {
         throw Exception('Failed to load story detail');
       }
-    } catch (e){
+    } catch (e) {
       throw Exception('Failed to load story detail catch: $e');
     }
   }
 
   Future<AddStoryResponse> uploadStory(
-      List<int> bytes,
-      String fileName,
-      String description,
-      ) async {
-
+    List<int> bytes,
+    String fileName,
+    String description, {
+    double? lat,
+    double? lon,
+  }) async {
     final token = await authRepository.getToken();
 
     const String url = "$_baseUrl/stories";
@@ -138,10 +122,13 @@ class ApiService{
     );
     final Map<String, String> fields = {
       "description": description,
+      "lat": lat.toString(),
+      "lon": lon.toString(),
     };
+
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
-      "Authorization": "Bearer $token"
+      "Authorization": "Bearer $token",
     };
 
     request.files.add(multiPartFile);
@@ -160,9 +147,8 @@ class ApiService{
       );
       return addStoryResponse;
     } else {
-      throw Exception("Upload file error");
+      final errorResponse = AddStoryResponse.fromJson(jsonDecode(responseData));
+      throw Exception(errorResponse.message ?? "Upload file error");
     }
   }
-
-
 }

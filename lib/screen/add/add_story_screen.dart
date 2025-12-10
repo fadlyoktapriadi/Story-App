@@ -2,12 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' as geo;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/common.dart';
 import 'package:story_app/provider/add/add_provider.dart';
 import 'package:story_app/provider/home/home_provider.dart';
 import 'package:story_app/result/story_add_story_result_state.dart';
+
+import '../components/placemark_comp.dart';
 
 class AddStoryScreen extends StatefulWidget {
   final Function() onBack;
@@ -20,6 +25,77 @@ class AddStoryScreen extends StatefulWidget {
 
 class _AddStoryScreenState extends State<AddStoryScreen> {
   final TextEditingController _descriptionController = TextEditingController();
+  bool isUsingMaps = false;
+  final Location location = Location();
+  late GoogleMapController mapController;
+  late bool serviceEnabled;
+  late PermissionStatus permissionGranted;
+  LatLng? _currentLatLng;
+  geo.Placemark? placemark;
+  late final Set<Marker> markers = {};
+  double lat = 0.0;
+  double lon = 0.0;
+
+  Future<void> serviceLocationGps() async {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        print("Location services is not available");
+        return;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        print("Location permission is denied");
+        return;
+      }
+    }
+  }
+
+  Future<void> _initLocation() async {
+    await serviceLocationGps();
+    final data = await location.getLocation();
+    setState(() {
+      _currentLatLng = LatLng(data.latitude ?? 0, data.longitude ?? 0);
+      lat = data.latitude ?? 0;
+      lon = data.longitude ?? 0;
+    });
+  }
+
+  void defineMarker(LatLng latLng, String street, String address) {
+    final marker = Marker(
+      markerId: const MarkerId("source"),
+      position: latLng,
+      infoWindow: InfoWindow(title: street, snippet: address),
+    );
+    setState(() {
+      lat = latLng.latitude;
+      lon = latLng.longitude;
+      markers.clear();
+      markers.add(marker);
+    });
+  }
+
+  void onLongPressGoogleMap(LatLng latLng) async {
+    final info = await geo.placemarkFromCoordinates(
+      latLng.latitude,
+      latLng.longitude,
+    );
+    final place = info[0];
+    final street = place.street!;
+    final address =
+        '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    setState(() {
+      placemark = place;
+    });
+    defineMarker(latLng, street, address);
+
+    mapController.animateCamera(CameraUpdate.newLatLng(latLng));
+  }
 
   @override
   void initState() {
@@ -31,12 +107,12 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
           const SnackBar(content: Text("Story Uploaded Successfully")),
         );
         widget.onBack();
-
       } else if (addProvider.state is StoryAddStoryResultStateError) {
-        final errorMessage = (addProvider.state as StoryAddStoryResultStateError).error;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
-        );
+        final errorMessage =
+            (addProvider.state as StoryAddStoryResultStateError).error;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(errorMessage)));
       }
     });
     super.initState();
@@ -144,27 +220,96 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
               padding: const EdgeInsets.all(12.0),
               child: TextFormField(
                 controller: _descriptionController,
-                maxLines: 7,
+                maxLines: 5,
                 decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.placeholderDescription,
+                  hintText:
+                      AppLocalizations.of(context)!.placeholderDescription,
                   border: OutlineInputBorder(),
                 ),
               ),
             ),
 
             Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Lokasi Story",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Switch(
+                    value: isUsingMaps,
+                    onChanged: (value) {
+                      setState(() {
+                        isUsingMaps = value;
+                      });
+                      if (value) {
+                        _initLocation();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            if (isUsingMaps)
+              _currentLatLng == null
+                  ? const SizedBox(
+                    height: 270,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                  : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: SizedBox(
+                      height: 270,
+                      child: Stack(
+                        children: [
+                          GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                              target: _currentLatLng!,
+                              zoom: 18,
+                            ),
+                            markers: markers,
+                            zoomControlsEnabled: false,
+                            mapToolbarEnabled: false,
+                            myLocationButtonEnabled: true,
+                            myLocationEnabled: true,
+                            onMapCreated: (controller) {
+                              controller.animateCamera(
+                                CameraUpdate.newLatLng(_currentLatLng!),
+                              );
+                              setState(() {
+                                mapController = controller;
+                              });
+                            },
+                            onLongPress: (LatLng latLng) {
+                              onLongPressGoogleMap(latLng);
+                            },
+                          ),
+                          if (placemark == null)
+                            const SizedBox()
+                          else
+                            Positioned(
+                              bottom: 16,
+                              right: 16,
+                              left: 16,
+                              child: PlacemarkWidget(placemark: placemark!),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+            Padding(
               padding: const EdgeInsets.all(12.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50), // Full-width button
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primary, // Primary color
-                  foregroundColor:
-                      Theme.of(
-                        context,
-                      ).colorScheme.onPrimary, // Text color on primary
+                  minimumSize: const Size.fromHeight(50),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20), // Rounded corners
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 onPressed: () {
@@ -293,6 +438,8 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
         newBytes,
         fileName,
         _descriptionController.text,
+        lat: lat,
+        lon: lon,
       );
     } catch (e) {
       scaffoldMessengerState.showSnackBar(
