@@ -11,6 +11,8 @@ import 'package:story_app/provider/register/register_provider.dart';
 import 'package:story_app/routes/router_delegate.dart';
 import 'package:story_app/styles/theme/story_theme.dart';
 
+import 'data/StoryRepository.dart';
+
 void main() {
   runApp(const MainApp());
 }
@@ -27,12 +29,14 @@ class _MainAppState extends State<MainApp> {
   late AuthProvider authProvider;
   late ApiService apiService;
   late AuthRepository authRepository;
+  late StoryRepository storyRepository;
 
   @override
   void initState() {
     super.initState();
-    authRepository = AuthRepository();
     apiService = ApiService();
+    authRepository = AuthRepository();
+    storyRepository = StoryRepository(apiService);
     myRouterDelegate = MyRouterDelegate(authRepository);
     authProvider = AuthProvider(apiService, authRepository);
   }
@@ -48,13 +52,13 @@ class _MainAppState extends State<MainApp> {
             create: (context) => RegisterProvider(apiService)
         ),
         ChangeNotifierProvider(
-            create: (context) => HomeProvider(apiService)
+            create: (context) => HomeProvider(storyRepository)
         ),
         ChangeNotifierProvider(
-            create: (context) => DetailProvider(apiService)
+            create: (context) => DetailProvider(storyRepository)
         ),
         ChangeNotifierProvider(
-            create: (context) => AddProvider(apiService)
+            create: (context) => AddProvider(storyRepository)
         )
       ],
       child: MaterialApp(
