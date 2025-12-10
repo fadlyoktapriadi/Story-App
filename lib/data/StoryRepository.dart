@@ -9,11 +9,7 @@ class StoryRepository {
   StoryRepository(this.apiService);
 
   Future<StoryResponse> getAllStories({int? page, int? size, int? location}) {
-    return apiService.getAllStories(
-      page: page,
-      size: size,
-      location: location,
-    );
+    return apiService.getAllStories(page: page, size: size, location: location);
   }
 
   Future<StoryDetailResponse> getStoryDetail(String id) {
@@ -35,5 +31,4 @@ class StoryRepository {
       lon: lon,
     );
   }
-
 }

@@ -8,7 +8,6 @@ import 'package:story_app/screen/register/register_screen.dart';
 
 class MyRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
-
   final GlobalKey<NavigatorState> _navigatorKey;
 
   bool registerSelected = false;
@@ -19,9 +18,8 @@ class MyRouterDelegate extends RouterDelegate
   String? selectedStory;
   bool? isAddStory = false;
 
-
-  MyRouterDelegate(this.authRepository) :
-        _navigatorKey = GlobalKey<NavigatorState>(){
+  MyRouterDelegate(this.authRepository)
+    : _navigatorKey = GlobalKey<NavigatorState>() {
     _init();
   }
 
@@ -126,17 +124,13 @@ class MyRouterDelegate extends RouterDelegate
           },
         ),
       ),
-
   ];
 
   @override
   GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
 
-
   @override
   Future<void> setNewRoutePath(configuration) {
     throw UnimplementedError();
   }
-
-
 }

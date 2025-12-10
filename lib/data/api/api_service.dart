@@ -58,7 +58,11 @@ class ApiService {
     }
   }
 
-  Future<StoryResponse> getAllStories({int? page, int? size, int? location}) async {
+  Future<StoryResponse> getAllStories({
+    int? page,
+    int? size,
+    int? location,
+  }) async {
     final token = await authRepository.getToken();
 
     try {

@@ -51,10 +51,7 @@ class AuthProvider extends ChangeNotifier {
     if (logout) {
       await authRepository.deleteToken();
     }
-    // isLoggedIn = await authRepository.isLoggedIn();
-    // isLoadingLogout = false;
     notifyListeners();
     return !isLoggedIn;
   }
-
 }

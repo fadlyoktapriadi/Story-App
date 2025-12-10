@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'add_story_response.g.dart';
@@ -8,13 +7,10 @@ class AddStoryResponse {
   bool error;
   String message;
 
-  AddStoryResponse({
-    required this.error,
-    required this.message,
-  });
+  AddStoryResponse({required this.error, required this.message});
 
-  factory AddStoryResponse.fromJson(Map<String, dynamic> json) => _$AddStoryResponseFromJson(json);
+  factory AddStoryResponse.fromJson(Map<String, dynamic> json) =>
+      _$AddStoryResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$AddStoryResponseToJson(this);
-
 }

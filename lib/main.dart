@@ -45,21 +45,19 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => authProvider),
         ChangeNotifierProvider(
-            create: (context) => authProvider
+          create: (context) => RegisterProvider(apiService),
         ),
         ChangeNotifierProvider(
-            create: (context) => RegisterProvider(apiService)
+          create: (context) => HomeProvider(storyRepository),
         ),
         ChangeNotifierProvider(
-            create: (context) => HomeProvider(storyRepository)
+          create: (context) => DetailProvider(storyRepository),
         ),
         ChangeNotifierProvider(
-            create: (context) => DetailProvider(storyRepository)
+          create: (context) => AddProvider(storyRepository),
         ),
-        ChangeNotifierProvider(
-            create: (context) => AddProvider(storyRepository)
-        )
       ],
       child: MaterialApp(
         theme: StoryTheme.lightTheme,

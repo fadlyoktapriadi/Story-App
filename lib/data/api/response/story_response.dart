@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:story_app/data/api/response/story_detail_response.dart';
 
@@ -11,11 +10,7 @@ class StoryResponse {
   @JsonKey(name: "listStory")
   final List<Story>? listStory;
 
-  StoryResponse({
-    this.error,
-    this.message,
-    this.listStory,
-  });
+  StoryResponse({this.error, this.message, this.listStory});
 
   factory StoryResponse.fromJson(Map<String, dynamic> json) =>
       _$StoryResponseFromJson(json);

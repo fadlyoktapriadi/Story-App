@@ -154,12 +154,13 @@ class _DetailScreenState extends State<DetailScreen> {
                                       onMapCreated: (controller) async {
                                         _defineMarker(
                                           LatLng(story.lat!, story.lon!),
-                                          story.name
+                                          story.name,
                                         );
-                                        final info = await geo.placemarkFromCoordinates(
-                                          story.lat!,
-                                          story.lon!,
-                                        );
+                                        final info = await geo
+                                            .placemarkFromCoordinates(
+                                              story.lat!,
+                                              story.lon!,
+                                            );
                                         final place = info[0];
                                         setState(() {
                                           placemark = place;
@@ -173,7 +174,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                         bottom: 16,
                                         right: 16,
                                         left: 16,
-                                        child: PlacemarkWidget(placemark: placemark!),
+                                        child: PlacemarkWidget(
+                                          placemark: placemark!,
+                                        ),
                                       ),
                                   ],
                                 ),

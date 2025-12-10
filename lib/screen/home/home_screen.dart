@@ -10,21 +10,27 @@ class HomeScreen extends StatefulWidget {
   final Function() onLogout;
   final Function() onAddStory;
 
-  const HomeScreen({super.key, required this.onTap, required this.onLogout, required this.onAddStory});
+  const HomeScreen({
+    super.key,
+    required this.onTap,
+    required this.onLogout,
+    required this.onAddStory,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_onScroll);
-    Future.microtask(() => context.read<HomeProvider>().getStories(refresh: true));
+    Future.microtask(
+      () => context.read<HomeProvider>().getStories(refresh: true),
+    );
   }
 
   void _onScroll() {
@@ -86,24 +92,26 @@ class _HomeScreenState extends State<HomeScreen> {
             } else if (provider.state is StoryStoriesSuccessState) {
               final stories = provider.stories;
               return RefreshIndicator(
-                  onRefresh: () => context.read<HomeProvider>().getStories(refresh: true),
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: stories.length + (provider.isLoadingMore ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == stories.length) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
-                      final story = stories[index];
-                      return ItemCardStory(
-                        story: story,
-                        onTap: () => widget.onTap(story.id),
+                onRefresh:
+                    () =>
+                        context.read<HomeProvider>().getStories(refresh: true),
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: stories.length + (provider.isLoadingMore ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == stories.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: CircularProgressIndicator()),
                       );
-                    },
-                  ),
+                    }
+                    final story = stories[index];
+                    return ItemCardStory(
+                      story: story,
+                      onTap: () => widget.onTap(story.id),
+                    );
+                  },
+                ),
               );
             }
             return const SizedBox();

@@ -146,7 +146,6 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    // minimumSize: const Size.fromHeight(50), // Full-width button
                     backgroundColor:
                         Theme.of(context).colorScheme.tertiary, // Primary color
                     foregroundColor:
@@ -180,17 +179,10 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    // minimumSize: const Size.fromHeight(50), // Full-width button
-                    backgroundColor:
-                        Theme.of(context).colorScheme.tertiary, // Primary color
-                    foregroundColor:
-                        Theme.of(
-                          context,
-                        ).colorScheme.onTertiary, // Text color on primary
+                    backgroundColor: Theme.of(context).colorScheme.tertiary,
+                    foregroundColor: Theme.of(context).colorScheme.onTertiary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        20,
-                      ), // Rounded corners
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   onPressed: () {

@@ -1,4 +1,3 @@
-
 import 'package:story_app/data/api/response/add_story_response.dart';
 
 sealed class StoryAddStoryResultState {}

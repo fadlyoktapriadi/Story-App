@@ -42,7 +42,7 @@ class _FormRegisterState extends State<FormRegister> {
               children: [
                 Text("Name", style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 5),
-                  TextFormField(
+                TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.placeholderName,

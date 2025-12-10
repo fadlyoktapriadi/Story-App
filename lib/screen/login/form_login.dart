@@ -15,30 +15,29 @@ class FormLogin extends StatefulWidget {
 }
 
 class _FormLoginState extends State<FormLogin> {
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
-
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.addListener(() {
       if (authProvider.state is StoryLoginSuccessState) {
         widget.toLogin();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login Successful")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Login Successful")));
       } else if (authProvider.state is StoryLoginErrorState) {
         final errorMessage = (authProvider.state as StoryLoginErrorState).error;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(errorMessage)));
       }
     });
     super.initState();
   }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -57,10 +56,7 @@ class _FormLoginState extends State<FormLogin> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "E-Mail",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text("E-Mail", style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _emailController,
@@ -87,10 +83,7 @@ class _FormLoginState extends State<FormLogin> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Password",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text("Password", style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _passwordController,
@@ -116,16 +109,26 @@ class _FormLoginState extends State<FormLogin> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50), // Full-width button
-                backgroundColor: Theme.of(context).colorScheme.primary, // Primary color
-                foregroundColor: Theme.of(context).colorScheme.onPrimary, // Text color on primary
+                backgroundColor:
+                    Theme.of(context).colorScheme.primary, // Primary color
+                foregroundColor:
+                    Theme.of(
+                      context,
+                    ).colorScheme.onPrimary, // Text color on primary
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20), // Rounded corners
                 ),
               ),
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                  authProvider.login(_emailController.text, _passwordController.text);
+                  final authProvider = Provider.of<AuthProvider>(
+                    context,
+                    listen: false,
+                  );
+                  authProvider.login(
+                    _emailController.text,
+                    _passwordController.text,
+                  );
                 }
               },
               child: Consumer<AuthProvider>(
@@ -156,8 +159,12 @@ class _FormLoginState extends State<FormLogin> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50), // Full-width button
-                backgroundColor: Theme.of(context).colorScheme.surface, // Primary color
-                foregroundColor: Theme.of(context).colorScheme.onSurface, // Text color on primary
+                backgroundColor:
+                    Theme.of(context).colorScheme.surface, // Primary color
+                foregroundColor:
+                    Theme.of(
+                      context,
+                    ).colorScheme.onSurface, // Text color on primary
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20), // Rounded corners
                 ),
@@ -165,10 +172,12 @@ class _FormLoginState extends State<FormLogin> {
               onPressed: () {
                 widget.toRegister();
               },
-              child: Text(AppLocalizations.of(context)!.registerButton,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  )),
+              child: Text(
+                AppLocalizations.of(context)!.registerButton,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
             ),
           ],
         ),

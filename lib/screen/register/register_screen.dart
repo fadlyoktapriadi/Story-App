@@ -5,6 +5,7 @@ import 'package:story_app/screen/register/form_register.dart';
 
 class RegisterScreen extends StatelessWidget {
   final Function() toLogin;
+
   const RegisterScreen({super.key, required this.toLogin});
 
   @override
@@ -16,23 +17,26 @@ class RegisterScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 30),
-              Text("Storyfy",
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  )),
+              Text(
+                "Storyfy",
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
               const SizedBox(height: 20),
-              Lottie.asset('assets/animation/animation_register.json', // Replace with your file path
-                width: 150, // Optional: Set width
-                height: 150, // Optional: Set height
+              Lottie.asset(
+                'assets/animation/animation_register.json',
+                width: 150,
+                height: 150
               ),
               const SizedBox(height: 10),
-              Text(AppLocalizations.of(context)!.registerTitle, style: Theme.of(context).textTheme.labelLarge),
-              FormRegister(
-                toLogin: toLogin,
-              )
-
+              Text(
+                AppLocalizations.of(context)!.registerTitle,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              FormRegister(toLogin: toLogin),
             ],
           ),
         ),

@@ -5,7 +5,6 @@ import 'package:image/image.dart' as img;
 import 'package:story_app/result/story_add_story_result_state.dart';
 
 class AddProvider extends ChangeNotifier {
-
   final StoryRepository storyRepository;
 
   AddProvider(this.storyRepository);

@@ -8,9 +8,11 @@ class HomeProvider extends ChangeNotifier {
   HomeProvider(this.storyRepository);
 
   StoryStoriesResultState _state = StoryStoriesNoneState();
+
   StoryStoriesResultState get state => _state;
 
   final List _stories = [];
+
   List get stories => List.unmodifiable(_stories);
 
   int pageItems = 1;
@@ -18,6 +20,7 @@ class HomeProvider extends ChangeNotifier {
   bool hasMorePages = true;
   bool _isFetching = false;
   bool _isInitialLoad = true;
+
   bool get isLoadingMore => _isFetching && !_isInitialLoad;
 
   Future<void> getStories({bool refresh = false, int? location}) async {
