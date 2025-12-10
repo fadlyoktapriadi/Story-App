@@ -1,5 +1,4 @@
 
-import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:story_app/data/api/response/story_detail_response.dart';
 

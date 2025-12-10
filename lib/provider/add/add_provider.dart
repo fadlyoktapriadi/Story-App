@@ -1,6 +1,5 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:story_app/data/StoryRepository.dart';
-import 'package:story_app/data/api/api_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:story_app/result/story_add_story_result_state.dart';

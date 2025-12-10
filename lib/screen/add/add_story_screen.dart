@@ -11,8 +11,7 @@ import 'package:story_app/common.dart';
 import 'package:story_app/provider/add/add_provider.dart';
 import 'package:story_app/provider/home/home_provider.dart';
 import 'package:story_app/result/story_add_story_result_state.dart';
-
-import '../components/placemark_comp.dart';
+import 'package:story_app/screen/components/placemark_comp.dart';
 
 class AddStoryScreen extends StatefulWidget {
   final Function() onBack;

@@ -5,8 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/provider/detail/detail_provider.dart';
 import 'package:story_app/result/story_detail_result_state.dart';
-
-import '../components/placemark_comp.dart';
+import 'package:story_app/screen/components/placemark_comp.dart';
 
 class DetailScreen extends StatefulWidget {
   final String id;
