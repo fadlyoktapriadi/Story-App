@@ -59,12 +59,12 @@ class ApiService {
     }
   }
 
-  Future<StoryResponse> getAllStories() async {
+  Future<StoryResponse> getAllStories({int? page, int? size, int? location}) async {
     final token = await authRepository.getToken();
 
     try {
       final response = await http.get(
-        Uri.parse('$_baseUrl/stories'),
+        Uri.parse('$_baseUrl/stories?page=$page&size=$size'),
         headers: {'Authorization': 'Bearer $token'},
       );
 

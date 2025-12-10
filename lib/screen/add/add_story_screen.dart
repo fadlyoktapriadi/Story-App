@@ -100,9 +100,9 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
   @override
   void initState() {
     final addProvider = Provider.of<AddProvider>(context, listen: false);
-    addProvider.addListener(() {
+    addProvider.addListener(() async {
       if (addProvider.state is StoryAddStoryResultStateSuccess) {
-        context.read<HomeProvider>().getStories();
+        await context.read<HomeProvider>().getStories(refresh: true);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Story Uploaded Successfully")),
         );
