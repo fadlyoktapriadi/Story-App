@@ -1,9 +1,9 @@
-import 'dart:convert';
 
-RegisterResponse registerResponseFromJson(String str) => RegisterResponse.fromJson(json.decode(str));
+import 'package:json_annotation/json_annotation.dart';
 
-String registerResponseToJson(RegisterResponse data) => json.encode(data.toJson());
+part 'register_response.g.dart';
 
+@JsonSerializable()
 class RegisterResponse {
   bool error;
   String message;
@@ -13,13 +13,7 @@ class RegisterResponse {
     required this.message,
   });
 
-  factory RegisterResponse.fromJson(Map<String, dynamic> json) => RegisterResponse(
-    error: json["error"],
-    message: json["message"],
-  );
+  factory RegisterResponse.fromJson(Map<String, dynamic> json) => _$RegisterResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-    "error": error,
-    "message": message,
-  };
+  Map<String, dynamic> toJson() => _$RegisterResponseToJson(this);
 }

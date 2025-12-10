@@ -1,31 +1,25 @@
 
 import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:story_app/data/api/response/story_detail_response.dart';
 
-StoryResponse storyResponseFromJson(String str) => StoryResponse.fromJson(json.decode(str));
+part 'story_response.g.dart';
 
-String storyResponseToJson(StoryResponse data) => json.encode(data.toJson());
-
+@JsonSerializable()
 class StoryResponse {
-  bool error;
-  String message;
-  List<Story> listStory;
+  final bool? error;
+  final String? message;
+  @JsonKey(name: "listStory")
+  final List<Story>? listStory;
 
   StoryResponse({
-    required this.error,
-    required this.message,
-    required this.listStory,
+    this.error,
+    this.message,
+    this.listStory,
   });
 
-  factory StoryResponse.fromJson(Map<String, dynamic> json) => StoryResponse(
-    error: json["error"],
-    message: json["message"],
-    listStory: List<Story>.from(json["listStory"].map((x) => Story.fromJson(x))),
-  );
+  factory StoryResponse.fromJson(Map<String, dynamic> json) =>
+      _$StoryResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-    "error": error,
-    "message": message,
-    "listStory": List<dynamic>.from(listStory.map((x) => x.toJson())),
-  };
+  Map<String, dynamic> toJson() => _$StoryResponseToJson(this);
 }
