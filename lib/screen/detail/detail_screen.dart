@@ -19,13 +19,12 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   final Set<Marker> markers = {};
-  geo.Placemark? placemark;
 
-  void _defineMarker(LatLng latLng, String name) {
+  void _defineMarker(LatLng latLng, String address) {
     final marker = Marker(
       markerId: const MarkerId("story_location"),
       position: latLng,
-      infoWindow: InfoWindow(title: name),
+      infoWindow: InfoWindow(title: address),
     );
 
     setState(() {
@@ -72,6 +71,11 @@ class _DetailScreenState extends State<DetailScreen> {
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
                       height: 320,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Center(
+                          child: Icon(Icons.image),
+                        );
+                      }
                     ),
                   ),
                   ListView(
@@ -152,32 +156,18 @@ class _DetailScreenState extends State<DetailScreen> {
                                       mapToolbarEnabled: true,
                                       myLocationButtonEnabled: false,
                                       onMapCreated: (controller) async {
-                                        _defineMarker(
-                                          LatLng(story.lat!, story.lon!),
-                                          story.name,
-                                        );
                                         final info = await geo
                                             .placemarkFromCoordinates(
                                               story.lat!,
                                               story.lon!,
                                             );
                                         final place = info[0];
-                                        setState(() {
-                                          placemark = place;
-                                        });
+                                        _defineMarker(
+                                          LatLng(story.lat!, story.lon!),
+                                          '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}',
+                                        );
                                       },
                                     ),
-                                    if (placemark == null)
-                                      const SizedBox()
-                                    else
-                                      Positioned(
-                                        bottom: 16,
-                                        right: 16,
-                                        left: 16,
-                                        child: PlacemarkWidget(
-                                          placemark: placemark!,
-                                        ),
-                                      ),
                                   ],
                                 ),
                               ),

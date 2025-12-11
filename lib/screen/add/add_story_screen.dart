@@ -107,11 +107,9 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
         );
         widget.onBack();
       } else if (addProvider.state is StoryAddStoryResultStateError) {
-        final errorMessage =
-            (addProvider.state as StoryAddStoryResultStateError).error;
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(errorMessage)));
+        ).showSnackBar(SnackBar(content: Text("Failed to upload story, try again.")));
       }
     });
     super.initState();
@@ -128,228 +126,219 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(AppLocalizations.of(context)!.titleAddStory)),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child:
-                  context.watch<AddProvider>().imagePath == null
-                      ? const Align(
-                        alignment: Alignment.center,
-                        child: Icon(Icons.image, size: 100),
-                      )
-                      : _showImage(),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.tertiary, // Primary color
-                    foregroundColor:
-                        Theme.of(
-                          context,
-                        ).colorScheme.onTertiary, // Text color on primary
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        20,
-                      ), // Rounded corners
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: 300,
+                child:
+                    context.watch<AddProvider>().imagePath == null
+                        ? const Align(
+                          alignment: Alignment.center,
+                          child: Icon(Icons.image, size: 100),
+                        )
+                        : _showImage(),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.tertiary,
+                      foregroundColor: Theme.of(context).colorScheme.onTertiary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () {
+                      _onGalleryView();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.photo_library),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Gallery",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onTertiary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  onPressed: () {
-                    _onGalleryView();
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.photo_library),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Gallery",
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onTertiary,
-                        ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.tertiary,
+                      foregroundColor: Theme.of(context).colorScheme.onTertiary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ],
+                    ),
+                    onPressed: () {
+                      _onCameraView();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.camera_alt),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Camera",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onTertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    hintText:
+                        AppLocalizations.of(context)!.placeholderDescription,
+                    border: OutlineInputBorder(),
                   ),
                 ),
-                ElevatedButton(
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Lokasi Story",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Switch(
+                      value: isUsingMaps,
+                      onChanged: (value) {
+                        setState(() {
+                          isUsingMaps = value;
+                        });
+                        if (value) {
+                          _initLocation();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              if (isUsingMaps)
+                _currentLatLng == null
+                    ? const SizedBox(
+                      height: 270,
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                    : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: SizedBox(
+                        height: 270,
+                        child: Stack(
+                          children: [
+                            GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: _currentLatLng!,
+                                zoom: 18,
+                              ),
+                              markers: markers,
+                              zoomControlsEnabled: false,
+                              mapToolbarEnabled: false,
+                              myLocationButtonEnabled: true,
+                              myLocationEnabled: true,
+                              onMapCreated: (controller) {
+                                controller.animateCamera(
+                                  CameraUpdate.newLatLng(_currentLatLng!),
+                                );
+                                setState(() {
+                                  mapController = controller;
+                                });
+                              },
+                              onLongPress: (LatLng latLng) {
+                                onLongPressGoogleMap(latLng);
+                              },
+                            ),
+                            if (placemark != null)
+                              Positioned(
+                                bottom: 16,
+                                right: 16,
+                                left: 16,
+                                child: PlacemarkWidget(placemark: placemark!),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.tertiary,
-                    foregroundColor: Theme.of(context).colorScheme.onTertiary,
+                    minimumSize: const Size.fromHeight(50),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   onPressed: () {
-                    _onCameraView();
+                    _uploadStory();
                   },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.camera_alt),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Camera",
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onTertiary,
+                  child: Consumer<AddProvider>(
+                    builder: (context, value, child) {
+                      return switch (value.state) {
+                        StoryAddStoryResultStateLoading() => Center(
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextFormField(
-                controller: _descriptionController,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  hintText:
-                      AppLocalizations.of(context)!.placeholderDescription,
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Lokasi Story",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Switch(
-                    value: isUsingMaps,
-                    onChanged: (value) {
-                      setState(() {
-                        isUsingMaps = value;
-                      });
-                      if (value) {
-                        _initLocation();
-                      }
+                        StoryAddStoryResultStateSuccess() => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.send),
+                            const SizedBox(width: 8),
+                            Text(
+                              AppLocalizations.of(context)!.uploadStory,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.titleMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        _ => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.send),
+                            const SizedBox(width: 8),
+                            Text(
+                              AppLocalizations.of(context)!.uploadStory,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.titleMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      };
                     },
                   ),
-                ],
-              ),
-            ),
-
-            if (isUsingMaps)
-              _currentLatLng == null
-                  ? const SizedBox(
-                    height: 270,
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                  : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: SizedBox(
-                      height: 270,
-                      child: Stack(
-                        children: [
-                          GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                              target: _currentLatLng!,
-                              zoom: 18,
-                            ),
-                            markers: markers,
-                            zoomControlsEnabled: false,
-                            mapToolbarEnabled: false,
-                            myLocationButtonEnabled: true,
-                            myLocationEnabled: true,
-                            onMapCreated: (controller) {
-                              controller.animateCamera(
-                                CameraUpdate.newLatLng(_currentLatLng!),
-                              );
-                              setState(() {
-                                mapController = controller;
-                              });
-                            },
-                            onLongPress: (LatLng latLng) {
-                              onLongPressGoogleMap(latLng);
-                            },
-                          ),
-                          if (placemark == null)
-                            const SizedBox()
-                          else
-                            Positioned(
-                              bottom: 16,
-                              right: 16,
-                              left: 16,
-                              child: PlacemarkWidget(placemark: placemark!),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                onPressed: () {
-                  _uploadStory();
-                },
-                child: Consumer<AddProvider>(
-                  builder: (context, value, child) {
-                    return switch (value.state) {
-                      StoryAddStoryResultStateLoading() => Center(
-                        child: CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ),
-                      StoryAddStoryResultStateSuccess() => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.send),
-                          const SizedBox(width: 8),
-                          Text(
-                            AppLocalizations.of(context)!.uploadStory,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      _ => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.send),
-                          const SizedBox(width: 8),
-                          Text(
-                            AppLocalizations.of(context)!.uploadStory,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    };
-                  },
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -434,7 +423,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
       );
     } catch (e) {
       scaffoldMessengerState.showSnackBar(
-        SnackBar(content: Text("Failed to upload story: $e")),
+        SnackBar(content: Text("Failed to upload story, try again")),
       );
     } finally {
       addProvider.clearImage();

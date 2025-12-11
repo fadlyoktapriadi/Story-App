@@ -87,7 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
               return const Center(child: CircularProgressIndicator());
             } else if (provider.state is StoryStoriesErrorState) {
               return Center(
-                child: Text((provider.state as StoryStoriesErrorState).error),
+                child: Padding(padding: const EdgeInsets.all(12.0),
+                  child: Text("Story data could not be loaded. Please try again."),
+                ),
               );
             } else if (provider.state is StoryStoriesSuccessState) {
               final stories = provider.stories;
